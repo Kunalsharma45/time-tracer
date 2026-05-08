@@ -1,0 +1,36 @@
+name: Server CI
+
+on:
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: |
+          cd server
+          npm install
+
+      - name: Start Check
+        run: |
+          cd server
+          npm run start &
+          sleep 10
+
+      - name: Build Docker Image
+        run: |
+          docker build -t server-app ./server
